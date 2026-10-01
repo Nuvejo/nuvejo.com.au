@@ -1,0 +1,1557 @@
+/* ==========================================================================
+   NUVEJO — "Bold Craft"
+   Dark, layered, graphic-forward. Every motif traces back to the logo:
+   isometric plates stacked around a vertical light beam.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+  /* Surfaces — derived from the logo's navy field */
+  --ink:        #0f1420;
+  --ink-raise:  #141b2b;
+  --navy:       #1c2942;
+  --navy-lift:  #24334f;
+
+  /* Accents — the sky-blue beam and the gold portal */
+  --sky:        #5b9bd5;
+  --sky-hi:     #8fc4ea;
+  --sky-lo:     #2f5f8f;
+  --gold:       #d4a054;
+  --gold-hi:    #ecc188;
+  --gold-lo:    #8a6529;
+
+  /* Plate fills — the three stacked layers */
+  --plate-1a:   #2a5183;
+  --plate-1b:   #1f3c63;
+  --plate-2a:   #5b6577;
+  --plate-2b:   #3d4655;
+  --plate-3a:   #223f68;
+  --plate-3b:   #172a45;
+
+  /* Text */
+  --paper:      #f4f1ea;
+  --paper-2:    rgba(244, 241, 234, 0.70);
+  --paper-3:    rgba(244, 241, 234, 0.46);
+  --paper-4:    rgba(244, 241, 234, 0.26);
+
+  /* Lines */
+  --line:       rgba(244, 241, 234, 0.09);
+  --line-2:     rgba(244, 241, 234, 0.16);
+  --line-3:     rgba(244, 241, 234, 0.28);
+
+  /* Type */
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body:    "Inter", "Segoe UI", system-ui, sans-serif;
+
+  /* Rhythm */
+  --shell:   1240px;
+  --gutter:  clamp(1.25rem, 4vw, 3rem);
+  --band:    clamp(4.5rem, 11vw, 9.5rem);
+
+  --r-sm: 4px;
+  --r-md: 10px;
+  --r-lg: 18px;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET & BASE
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 6.5rem;
+  /* Belongs on html, not just body: on iOS Safari the root element is what
+     actually scrolls, so body-only overflow-x:hidden doesn't reliably stop
+     horizontal panning there. Background matches body so an elastic overscroll
+     bounce never flashes the browser's default white canvas. */
+  overflow-x: hidden;
+  background: var(--ink);
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--body);
+  font-size: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  line-height: 1.72;
+  font-weight: 400;
+  letter-spacing: -0.003em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* `clip`, not `hidden`. Once html above carries a non-visible overflow-x,
+     body's own value stops being propagated to the viewport — so `hidden`
+     here would turn body itself into a scroll container, and the hero's
+     position:sticky graphic would anchor to that container instead of the
+     viewport and never pin. `clip` trims the same overflow without creating
+     a scroll container. */
+  overflow-x: clip;
+}
+
+img, svg, video { display: block; max-width: 100%; }
+img { height: auto; }
+
+a { color: inherit; text-decoration: none; }
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--display);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+::selection { background: var(--gold); color: var(--ink); }
+
+:focus-visible {
+  outline: 2px solid var(--sky-hi);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Parked above the viewport rather than off to the left, so it never
+   contributes to the document's horizontal scroll extent. */
+.skip {
+  position: fixed; left: 0.5rem; top: -100px; z-index: 999;
+  background: var(--gold); color: var(--ink);
+  padding: 0.75rem 1.25rem; font-weight: 600;
+  transition: top 0.2s var(--ease);
+}
+.skip:focus { top: 0.5rem; }
+
+.vh {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. PAGE ATMOSPHERE — grain + fixed radial glows
+   -------------------------------------------------------------------------- */
+.grain {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  opacity: 0.42; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+.aura { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.aura span {
+  position: absolute; display: block; border-radius: 50%;
+  filter: blur(90px); opacity: 0.5;
+}
+.aura span:nth-child(1) {
+  width: 46vw; height: 46vw; left: -14vw; top: -12vw;
+  background: radial-gradient(circle, rgba(91,155,213,0.42), transparent 68%);
+}
+.aura span:nth-child(2) {
+  width: 40vw; height: 40vw; right: -12vw; top: 22vh;
+  background: radial-gradient(circle, rgba(212,160,84,0.22), transparent 68%);
+}
+.aura span:nth-child(3) {
+  width: 52vw; height: 52vw; left: 26vw; bottom: -26vw;
+  background: radial-gradient(circle, rgba(36,51,79,0.85), transparent 70%);
+}
+
+/* Everything above the atmosphere */
+.masthead, main, .footer { position: relative; z-index: 2; }
+
+/* --------------------------------------------------------------------------
+   4. LAYOUT
+   -------------------------------------------------------------------------- */
+.shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.shell--wide { max-width: 1480px; }
+.shell--narrow { max-width: 820px; }
+
+.band { padding-block: var(--band); position: relative; }
+.band--tight { padding-block: clamp(3rem, 7vw, 5.5rem); }
+.band--flush-t { padding-top: 0; }
+
+/* Alternating surface with a hairline seam */
+.band--raise {
+  background: linear-gradient(180deg, rgba(28,41,66,0.55), rgba(15,20,32,0));
+  border-top: 1px solid var(--line);
+}
+
+/* --------------------------------------------------------------------------
+   5. TYPOGRAPHY UTILITIES
+   -------------------------------------------------------------------------- */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 0.7rem;
+  font-family: var(--display);
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--sky-hi);
+  margin: 0 0 1.4rem;
+}
+.eyebrow::before {
+  content: ""; width: 26px; height: 8px; flex: none;
+  background: linear-gradient(90deg, var(--sky), var(--sky-lo));
+  clip-path: polygon(0 50%, 22% 0, 100% 0, 78% 100%, 0 100%);
+}
+.eyebrow--gold { color: var(--gold-hi); }
+.eyebrow--gold::before { background: linear-gradient(90deg, var(--gold), var(--gold-lo)); }
+
+.h-mega {
+  font-size: clamp(2.9rem, 8.4vw, 6.4rem);
+  letter-spacing: -0.045em;
+  line-height: 0.96;
+}
+.h-1 { font-size: clamp(2.4rem, 6vw, 4.4rem); letter-spacing: -0.042em; }
+.h-2 { font-size: clamp(1.95rem, 4.2vw, 3.2rem); letter-spacing: -0.038em; }
+.h-3 { font-size: clamp(1.3rem, 2.2vw, 1.7rem); letter-spacing: -0.028em; line-height: 1.2; }
+.h-4 { font-size: clamp(1.08rem, 1.5vw, 1.25rem); letter-spacing: -0.02em; line-height: 1.3; }
+
+.lede {
+  font-size: clamp(1.08rem, 1.5vw, 1.3rem);
+  line-height: 1.66;
+  color: var(--paper-2);
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+.muted { color: var(--paper-2); }
+.faint { color: var(--paper-3); }
+.tiny  { font-size: 0.8rem; line-height: 1.6; }
+
+/* Gold-lit key words */
+.lit { color: var(--gold-hi); }
+.lit-sky { color: var(--sky-hi); }
+
+/* Headline words that sit on a beam of light.
+
+   Painted as a background on a plain inline box rather than an absolutely
+   positioned bar on an inline-block: an inline-block whose text has to wrap
+   stretches to the full width available to it, and a bar sized to that box
+   then ran far past the last word (on /work the bar overshot the headline's
+   last word by ~300px). As a plain inline the element breaks into one fragment per
+   line, and `box-decoration-break: clone` repaints the background on each —
+   so the beam always starts and ends exactly where the text does, at every
+   viewport, however the headline happens to wrap. */
+.beamed {
+  display: inline;
+  color: var(--paper);
+  background-image: linear-gradient(90deg, var(--sky) 5%, rgba(212,160,84,0.9) 95%);
+  background-repeat: no-repeat;
+  /* Same 0.26em band the old bar occupied; 81% lands it on the same spot
+     relative to the glyphs (measured against the previous rendering). */
+  background-size: 100% 0.26em;
+  background-position: 0 81%;
+  -webkit-box-decoration-break: clone;
+          box-decoration-break: clone;
+}
+
+/* Section heading pair */
+.head { max-width: 58ch; }
+.head--split {
+  display: grid; gap: clamp(1.5rem, 4vw, 3.5rem);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: end; max-width: none;
+}
+.head--split .head__aside { padding-bottom: 0.4rem; }
+
+/* --------------------------------------------------------------------------
+   6. THE PLATE MOTIF — dividers, bullets, ornaments
+   -------------------------------------------------------------------------- */
+
+/* A single isometric plate used as a bullet / marker */
+.plate-dot {
+  width: 18px; height: 9px; flex: none; display: block;
+  background: linear-gradient(90deg, var(--sky), var(--sky-lo));
+  clip-path: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
+}
+.plate-dot--gold { background: linear-gradient(90deg, var(--gold-hi), var(--gold-lo)); }
+
+/* Section seam: hairline interrupted by three stacked plates */
+.seam {
+  display: flex; align-items: center; gap: 1.1rem;
+  margin-block: 0;
+}
+.seam::before, .seam::after {
+  content: ""; height: 1px; flex: 1;
+  background: linear-gradient(90deg, transparent, var(--line-2), transparent);
+}
+.seam__stack { display: grid; gap: 3px; flex: none; }
+.seam__stack i {
+  display: block; width: 30px; height: 7px;
+  clip-path: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
+}
+.seam__stack i:nth-child(1) { background: var(--plate-1a); }
+.seam__stack i:nth-child(2) { background: var(--plate-2a); }
+.seam__stack i:nth-child(3) { background: var(--gold); }
+
+/* Oversized outlined index numeral */
+.index {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 5vw, 3.9rem);
+  line-height: 0.86;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1.4px var(--line-3);
+  transition: -webkit-text-stroke-color 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+/* --------------------------------------------------------------------------
+   7. BUTTONS
+   -------------------------------------------------------------------------- */
+.btn {
+  --btn-bg: transparent;
+  --btn-fg: var(--paper);
+  --btn-bd: var(--line-3);
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+  padding: 1.02rem 1.85rem;
+  font-family: var(--display);
+  font-size: 0.95rem; font-weight: 600; letter-spacing: -0.01em;
+  color: var(--btn-fg);
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-bd);
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.35s var(--ease-out), border-color 0.3s var(--ease),
+              color 0.3s var(--ease), box-shadow 0.35s var(--ease);
+  /* Clipped corner — echoes the plate's cut edge */
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0 100%);
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+.btn--gold {
+  --btn-bg: linear-gradient(135deg, var(--gold-hi), var(--gold));
+  --btn-fg: #171104;
+  --btn-bd: transparent;
+  box-shadow: 0 10px 34px -14px rgba(212,160,84,0.85);
+}
+.btn--gold:hover { box-shadow: 0 18px 44px -14px rgba(212,160,84,0.95); }
+
+.btn--sky {
+  --btn-bg: linear-gradient(135deg, var(--sky-hi), var(--sky));
+  --btn-fg: #06121e;
+  --btn-bd: transparent;
+  box-shadow: 0 10px 34px -14px rgba(91,155,213,0.9);
+}
+
+.btn--line { --btn-bd: var(--line-3); }
+.btn--line:hover { --btn-bd: var(--sky); color: var(--sky-hi); }
+
+.btn--solid {
+  --btn-bg: var(--navy-lift);
+  --btn-bd: var(--line-2);
+}
+.btn--solid:hover { --btn-bd: var(--line-3); }
+
+.btn--sm { padding: 0.72rem 1.25rem; font-size: 0.86rem;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%); }
+.btn--wide { width: 100%; }
+
+.btn__ico { width: 17px; height: 17px; flex: none; transition: transform 0.35s var(--ease-out); }
+.btn:hover .btn__ico { transform: translateX(3px); }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: 0.85rem; }
+
+/* Quiet text link with an animated underline */
+.tlink {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--display); font-weight: 600; font-size: 0.94rem;
+  color: var(--sky-hi);
+  padding-bottom: 3px;
+  background-image: linear-gradient(90deg, var(--sky-hi), var(--sky-hi));
+  background-size: 0% 1px; background-repeat: no-repeat; background-position: 0 100%;
+  transition: background-size 0.4s var(--ease-out);
+}
+.tlink:hover { background-size: 100% 1px; }
+.tlink svg { width: 15px; height: 15px; }
+
+/* --------------------------------------------------------------------------
+   8. BRAND LOCKUP
+   -------------------------------------------------------------------------- */
+.brand {
+  display: inline-flex; align-items: center; gap: 0.85rem;
+  flex: none;
+}
+/* Square box to match the mark's native 1:1 crop from the source artwork. */
+.brand__mark { display: block; width: 48px; height: 48px; flex: none; }
+.brand__mark img {
+  width: 100%; height: 100%; object-fit: contain; display: block;
+  transition: transform 0.4s var(--ease-out), filter 0.4s var(--ease);
+}
+.brand:hover .brand__mark img { transform: translateY(-1px) scale(1.03); filter: brightness(1.06); }
+
+.brand__type { display: grid; gap: 1px; }
+.brand__name {
+  font-family: var(--display);
+  font-size: 1.72rem; font-weight: 700; letter-spacing: -0.055em;
+  line-height: 1; color: var(--paper);
+}
+.brand__tag {
+  font-family: var(--display);
+  font-size: 0.535rem; font-weight: 500;
+  letter-spacing: 0.235em; text-transform: uppercase;
+  color: var(--paper-3); line-height: 1;
+}
+.brand__tag i { font-style: normal; color: var(--gold); }
+
+/* --------------------------------------------------------------------------
+   9. MASTHEAD
+   -------------------------------------------------------------------------- */
+.masthead {
+  position: sticky; top: 0; z-index: 60;
+  transition: background 0.4s var(--ease), border-color 0.4s var(--ease),
+              backdrop-filter 0.4s var(--ease), padding 0.4s var(--ease);
+  border-bottom: 1px solid transparent;
+  padding-block: 1.15rem;
+}
+.masthead.is-stuck {
+  background: rgba(11, 15, 24, 0.82);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border-bottom-color: var(--line);
+  padding-block: 0.7rem;
+}
+.masthead__in {
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+}
+
+.mainnav { display: flex; align-items: center; gap: 0.35rem; }
+.mainnav a {
+  position: relative;
+  font-family: var(--display);
+  font-size: 0.93rem; font-weight: 500; letter-spacing: -0.012em;
+  color: var(--paper-2);
+  padding: 0.6rem 0.95rem;
+  white-space: nowrap;
+  transition: color 0.28s var(--ease);
+}
+.mainnav a:not(.btn)::after {
+  content: ""; position: absolute; left: 0.95rem; right: 0.95rem; bottom: 0.3rem;
+  height: 6px;
+  background: linear-gradient(90deg, var(--sky), var(--sky-lo));
+  clip-path: polygon(0 50%, 12% 0, 100% 0, 88% 100%, 0 100%);
+  opacity: 0; transform: translateY(4px) scaleX(0.5);
+  transform-origin: left;
+  transition: opacity 0.3s var(--ease), transform 0.4s var(--ease-out);
+}
+.mainnav a:not(.btn):hover { color: var(--paper); }
+.mainnav a:not(.btn):hover::after,
+.mainnav a[aria-current="page"]::after { opacity: 0.85; transform: translateY(0) scaleX(1); }
+.mainnav a[aria-current="page"] { color: var(--paper); }
+.mainnav .btn { margin-left: 0.6rem; }
+
+.burger {
+  display: none;
+  width: 46px; height: 46px;
+  border: 1px solid var(--line-2);
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 5px;
+  flex: none;
+}
+.burger i {
+  display: block; width: 20px; height: 2px; background: var(--paper);
+  transition: transform 0.4s var(--ease-out), opacity 0.25s var(--ease);
+}
+.burger[aria-expanded="true"] i:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger[aria-expanded="true"] i:nth-child(2) { opacity: 0; }
+.burger[aria-expanded="true"] i:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* --------------------------------------------------------------------------
+   10. HERO
+   -------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  padding-block: clamp(3rem, 7vw, 6rem) clamp(4rem, 9vw, 8rem);
+  /* `clip`, not `hidden`: both trim the glow that bleeds past the edges, but
+     `hidden` would make this element a scroll container and that silently
+     kills the position: sticky on .stage__pin inside it. */
+  overflow: clip;
+}
+.hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.hero__title {
+  font-size: clamp(2.6rem, 6.6vw, 5.1rem);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  margin-bottom: 1.25rem;
+  text-wrap: balance;
+}
+.hero__title .l2 { display: block; color: var(--paper-2); }
+
+/* The line that carries the promise: identity + growth, set above the
+   explanatory subheading so it reads before the detail. */
+.hero__say {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(1.08rem, 1.75vw, 1.42rem);
+  line-height: 1.32;
+  letter-spacing: -0.028em;
+  color: var(--sky-hi);
+  max-width: 28ch;
+  margin-bottom: 1.35rem;
+  text-wrap: pretty;
+}
+
+.hero__sub {
+  font-size: clamp(1.05rem, 1.45vw, 1.235rem);
+  line-height: 1.66; color: var(--paper-2);
+  max-width: 46ch; margin-bottom: 2.4rem;
+  text-wrap: pretty;
+}
+
+.hero__proof {
+  display: flex; flex-wrap: wrap; gap: 0 2.2rem;
+  margin-top: 3.2rem; padding-top: 1.7rem;
+  border-top: 1px solid var(--line);
+}
+.hero__proof div { padding-block: 0.55rem; }
+.hero__proof dt {
+  font-family: var(--display); font-weight: 700;
+  font-size: 1.02rem; letter-spacing: -0.02em; color: var(--paper);
+}
+.hero__proof dd { margin: 0; font-size: 0.83rem; color: var(--paper-3); line-height: 1.45; }
+
+/* ---- The layered stage: the hero's signature graphic ----
+   Three isometric slabs on a grid, a light beam down the spine, and a label
+   rail on the right. Laid out with grid rather than absolute offsets so it
+   survives every viewport without hand-tuned percentages.
+
+   .stage is only the scroll track. It stretches to the full height of the
+   hero row and .stage__pin sticks inside it. That spare height is what the
+   exploded-view scrub in main.js spends: the graphic stays parked mid-viewport
+   while the copy slides past, and the slabs separate over exactly that range. */
+.stage {
+  position: relative;
+  align-self: stretch;
+  padding-block: clamp(1.6rem, 5vw, 3.4rem);
+}
+
+/* The copy column alone left only ~600px of pinned travel, which the fan ate
+   through before the graphic had really been looked at. This lengthens the
+   track so the opening has room to breathe. Desktop only — the single-column
+   layout below has no pinning to lengthen, and stretching it there would just
+   push the page down. Capped in px so tall monitors don't turn the hero into
+   an endless scroll. */
+@media (min-width: 1081px) {
+  .stage { min-height: min(165vh, 1360px); }
+}
+.stage__pin {
+  position: sticky;
+  /* main.js overwrites this with the exact offset that parks the graphic
+     mid-screen. The fallback approximates the same thing (half the viewport
+     less roughly half the graphic) so the frame before the script lands — and
+     the whole session, if it never does — sits within a few pixels of it. */
+  top: var(--pin-top, calc(50vh - 155px));
+}
+.stage__glow {
+  position: absolute; inset: -18% -12%;
+  background:
+    radial-gradient(circle at 42% 32%, rgba(91,155,213,0.36), transparent 58%),
+    radial-gradient(circle at 64% 72%, rgba(212,160,84,0.24), transparent 56%);
+  filter: blur(26px);
+  pointer-events: none;
+}
+/* Faint ruled grid — drafting-table texture behind the slabs */
+.stage__grid {
+  position: absolute; inset: -6%;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse at 44% 50%, #000 22%, transparent 72%);
+          mask-image: radial-gradient(ellipse at 44% 50%, #000 22%, transparent 72%);
+}
+
+/* Exploded view. --fan is the only thing that moves: 0 = slabs closed into a
+   tight block, 1 = pulled fully apart. main.js writes it from scroll position
+   (and --mx/--my from the pointer); everything below is derived here so the
+   script only ever touches three properties on this one element.
+
+   The outer slabs step symmetrically away from the middle one, so the stack
+   grows around its centre instead of drifting downward. Layout height never
+   changes — it is all transform — so nothing else on the page reflows. */
+.stack {
+  position: relative;
+  width: 100%;
+  display: grid;
+  gap: clamp(4px, 1.2vw, 13px);
+
+  --fan: 0;
+  --fan-close: 60px;  /* how far each outer slab tucks in when closed */
+  --fan-open: 55px;   /* how far it travels past its resting place when open */
+  --fan-step: calc(var(--fan) * (var(--fan-close) + var(--fan-open)) - var(--fan-close));
+}
+
+.stack__layer {
+  position: relative;
+  display: grid;
+  grid-template-columns: 66% minmax(0, 1fr);
+  align-items: center;
+  will-change: transform;
+  /* Pointer parallax (scaled by the slab's own --d) and the fan offset share
+     one transform, so the two never fight over the property. */
+  transform: translate3d(
+    calc(var(--mx, 0) * var(--d, 1) * 20px),
+    calc(var(--my, 0) * var(--d, 1) * 16px + (var(--i, 1) - 1) * var(--fan-step)),
+    0);
+}
+.stack__float {
+  animation: drift 9s var(--ease) infinite;
+  animation-delay: calc(var(--i, 0) * -3s);
+}
+.stack__plate { display: block; width: 100%; height: auto; overflow: visible; }
+
+@keyframes drift {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+/* Label rail beside each slab. The tags sit inside .stack__layer, so they ride
+   along with their own slab for free; what changes with --fan is only how
+   plainly they read — faint and tucked in while the stack is closed, full
+   strength once it has opened and there is room for them. */
+.stack__tag {
+  display: flex; align-items: center;
+  gap: clamp(0.4rem, 1.2vw, 0.75rem);
+  padding-left: clamp(0.45rem, 1.6vw, 1.1rem);
+  min-width: 0;
+  opacity: calc(0.34 + 0.66 * var(--fan, 0));
+  transform: translateX(calc((1 - var(--fan, 0)) * -12px));
+}
+.stack__tag::before {
+  content: ""; height: 1px; flex: none;
+  width: clamp(10px, 3vw, 32px);
+  background: linear-gradient(90deg, var(--line-3), transparent);
+}
+.stack__tag b {
+  font-family: var(--display); font-weight: 700;
+  font-size: clamp(0.68rem, 1vw, 0.78rem); letter-spacing: 0.1em;
+  color: var(--gold); flex: none;
+}
+.stack__tag em {
+  font-family: var(--display); font-style: normal; font-weight: 600;
+  font-size: clamp(0.76rem, 1.15vw, 0.98rem);
+  letter-spacing: -0.02em; color: var(--paper);
+}
+
+/* Vertical beam down the spine of the stack */
+.stack__beam {
+  position: absolute;
+  left: 33%; top: -9%; bottom: -9%;
+  width: clamp(6px, 1.15vw, 11px);
+  /* Grows with the fan so the beam still spans the slabs at both extremes —
+     the stack's layout box never changes, only what sits inside it. */
+  transform: translateX(-50%) scaleY(calc(0.68 + var(--fan, 0) * 0.62));
+  background: linear-gradient(180deg,
+    rgba(143,196,234,0) 0%,
+    rgba(143,196,234,0.95) 15%,
+    var(--sky) 50%,
+    rgba(143,196,234,0.95) 85%,
+    rgba(143,196,234,0) 100%);
+  box-shadow: 0 0 34px rgba(91,155,213,0.55);
+  pointer-events: none;
+}
+.stack__beam::after {
+  content: ""; position: absolute; inset: 0 auto 0 0; width: 2px;
+  background: rgba(255,255,255,0.55);
+}
+
+/* --------------------------------------------------------------------------
+   11. CARDS & FEATURE ROWS
+   -------------------------------------------------------------------------- */
+/* The 1px gaps show the container background as hairline seams. That only
+   works if the grid is never left with orphan cells, so the column count is
+   set explicitly per breakpoint rather than left to auto-fit. */
+.cards {
+  --cols: 3;
+  display: grid; gap: 1px;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.cards--2 { --cols: 2; }
+
+/* A 3-up grid drops straight to one column — going through 2 would strand a
+   card and expose an empty seam-coloured cell. A 2-up grid holds its pair. */
+@media (max-width: 900px) {
+  .cards { --cols: 1; }
+  .cards--2 { --cols: 2; }
+}
+@media (max-width: 620px) {
+  .cards, .cards--2 { --cols: 1; }
+}
+.card {
+  position: relative;
+  background: linear-gradient(170deg, rgba(28,41,66,0.60), rgba(15,20,32,0.9));
+  padding: clamp(1.7rem, 3vw, 2.5rem);
+  display: flex; flex-direction: column; gap: 0.85rem;
+  transition: background 0.45s var(--ease);
+  overflow: hidden;
+}
+.card::before {
+  content: ""; position: absolute; left: 0; top: 0; height: 2px; width: 0;
+  background: linear-gradient(90deg, var(--sky), var(--gold));
+  transition: width 0.6s var(--ease-out);
+}
+.card:hover { background: linear-gradient(170deg, rgba(36,51,79,0.85), rgba(15,20,32,0.92)); }
+.card:hover::before { width: 100%; }
+.card:hover .index { -webkit-text-stroke-color: var(--gold); }
+
+.card__ico { width: 42px; height: 42px; margin-bottom: 0.6rem; }
+.card h3 { font-size: 1.16rem; letter-spacing: -0.025em; }
+.card p { color: var(--paper-2); font-size: 0.955rem; line-height: 1.66; }
+
+/* Pillar kicker — the one-line claim that sits between the heading and body.
+   Needs to outrank `.card p` above, hence the element+class selector. */
+p.card__say {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.02rem;
+  letter-spacing: -0.024em;
+  line-height: 1.32;
+  color: var(--sky-hi);
+  margin-top: -0.3rem;
+}
+
+.card__list { display: grid; gap: 0.55rem; margin-top: 0.4rem; }
+.card__list li {
+  display: flex; gap: 0.7rem; align-items: flex-start;
+  font-size: 0.9rem; color: var(--paper-2); line-height: 1.5;
+}
+.card__list .plate-dot { margin-top: 0.42rem; }
+
+/* Feature rows — big numeral, offset text */
+.rows { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 88px) minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: clamp(1rem, 3vw, 2.5rem);
+  align-items: start;
+  padding-block: clamp(1.8rem, 3.4vw, 2.7rem);
+  border-bottom: 1px solid var(--line);
+  transition: background 0.4s var(--ease);
+}
+.row:hover { background: rgba(36,51,79,0.32); }
+.row:hover .index { -webkit-text-stroke-color: var(--gold); }
+.row h3 { font-size: clamp(1.18rem, 2vw, 1.5rem); }
+.row p { color: var(--paper-2); font-size: 0.97rem; }
+
+/* A row with no number — for a single call-out that shouldn't read as an
+   entry in a list. Same heading/paragraph treatment, just without the index
+   column reserved for a digit. Doubled selector so this beats the .row
+   breakpoint rules below, which target the numbered variant and would
+   otherwise squeeze this heading into the 64px column meant for a digit. */
+.row.row--single { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); }
+
+/* --------------------------------------------------------------------------
+   12. PROCESS — "So arbeite ich"
+   -------------------------------------------------------------------------- */
+.flow { position: relative; display: grid; gap: 0; }
+.flow::before {
+  content: ""; position: absolute;
+  left: 23px; top: 12px; bottom: 12px; width: 2px;
+  background: linear-gradient(180deg, var(--sky), rgba(91,155,213,0.15) 55%, var(--gold));
+  opacity: 0.5;
+}
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: clamp(1.2rem, 3vw, 2.4rem);
+  padding-block: clamp(1.5rem, 3vw, 2.3rem);
+}
+.step + .step { border-top: 1px solid var(--line); }
+.step__mark {
+  position: relative; z-index: 1;
+  width: 48px; height: 48px;
+  display: grid; place-items: center;
+  background: var(--ink-raise);
+  border: 1px solid var(--line-2);
+  font-family: var(--display); font-weight: 700; font-size: 0.9rem;
+  color: var(--gold);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%);
+  transition: border-color 0.35s var(--ease), color 0.35s var(--ease), background 0.35s var(--ease);
+}
+.step:hover .step__mark { border-color: var(--gold); background: var(--navy-lift); }
+.step__body { display: grid; gap: 0.6rem; }
+.step__body h3 { font-size: clamp(1.15rem, 2vw, 1.42rem); }
+.step__body p { color: var(--paper-2); max-width: 58ch; font-size: 0.965rem; }
+.step__meta {
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  font-family: var(--display); font-size: 0.76rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--sky-hi);
+  margin-top: 0.15rem;
+}
+
+/* --------------------------------------------------------------------------
+   13. PRICING
+   -------------------------------------------------------------------------- */
+.tiers {
+  display: grid; gap: 1.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  align-items: stretch;
+}
+.tier {
+  position: relative;
+  display: flex; flex-direction: column;
+  padding: clamp(1.7rem, 3vw, 2.3rem);
+  background: linear-gradient(175deg, rgba(28,41,66,0.55), rgba(15,20,32,0.92));
+  border: 1px solid var(--line);
+  transition: border-color 0.4s var(--ease), transform 0.45s var(--ease-out);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%);
+}
+.tier:hover { border-color: var(--line-3); transform: translateY(-4px); }
+
+.tier--hero {
+  border-color: rgba(212,160,84,0.42);
+  background: linear-gradient(175deg, rgba(48,40,24,0.5), rgba(28,41,66,0.6) 42%, rgba(15,20,32,0.94));
+  box-shadow: 0 30px 70px -40px rgba(212,160,84,0.5);
+}
+.tier--hero:hover { border-color: var(--gold); }
+
+.tier__flag {
+  position: absolute; top: 0; right: 0;
+  font-family: var(--display); font-size: 0.66rem; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: #171104;
+  background: linear-gradient(135deg, var(--gold-hi), var(--gold));
+  padding: 0.42rem 0.9rem;
+  clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.tier__name {
+  font-family: var(--display); font-weight: 700;
+  font-size: 1.42rem; letter-spacing: -0.03em;
+}
+.tier__for { color: var(--paper-3); font-size: 0.86rem; margin-top: 0.2rem; }
+
+.tier__price {
+  display: flex; align-items: baseline; gap: 0.4rem;
+  margin: 1.35rem 0 0.35rem;
+  font-family: var(--display);
+}
+.tier__price .pre { font-size: 0.86rem; color: var(--paper-3); font-weight: 500; }
+.tier__price .amt {
+  font-size: clamp(2.3rem, 4.2vw, 3rem); font-weight: 700;
+  letter-spacing: -0.05em; line-height: 1; color: var(--paper);
+}
+.tier--hero .tier__price .amt { color: var(--gold-hi); }
+.tier__price .per { font-size: 0.9rem; color: var(--paper-3); font-weight: 500; }
+.tier__note { font-size: 0.83rem; color: var(--paper-3); margin-bottom: 1.5rem; }
+
+.tier__sep { height: 1px; background: var(--line); margin-bottom: 1.35rem; }
+
+.tier__list { display: grid; gap: 0.72rem; margin-bottom: 1.9rem; flex: 1; }
+.tier__list li {
+  display: flex; gap: 0.72rem; align-items: flex-start;
+  font-size: 0.925rem; line-height: 1.52; color: var(--paper-2);
+}
+.tier__list .plate-dot { margin-top: 0.4rem; }
+.tier__list li.carry {
+  font-family: var(--display); font-weight: 600;
+  color: var(--paper); font-size: 0.88rem;
+  letter-spacing: -0.005em;
+  padding-bottom: 0.35rem;
+}
+.tier__list li.carry .plate-dot { background: linear-gradient(90deg, var(--gold-hi), var(--gold-lo)); }
+
+.star { color: var(--gold); text-decoration: none; font-size: 0.72em; vertical-align: super; }
+
+/* Inline aufpreis note under a tier's feature list — same warm accent as the
+   price-hint asterisk, so the two read as one system rather than two. */
+.tier__addon {
+  margin: -1.1rem 0 1.4rem;
+  padding-left: 0.2rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--gold-hi);
+}
+
+/* Retainer pair gets a wider, more editorial treatment. The min() wrapped
+   around the 320px floor stops it from outgrowing narrow phones (320px
+   viewports leave only ~280px of content width after the shell padding) —
+   above that the floor still reads as a flat 320px, same as before. */
+.tiers--care { grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); }
+
+/* Comparison strip */
+.compare {
+  border: 1px solid var(--line);
+  background: rgba(20,27,43,0.62);
+}
+.compare__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  padding: 0.95rem clamp(1rem, 2.4vw, 1.6rem);
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.92rem;
+}
+.compare__row:last-child { border-bottom: 0; }
+.compare__row--head {
+  background: rgba(36,51,79,0.5);
+  font-family: var(--display); font-weight: 600; font-size: 0.86rem;
+  letter-spacing: 0.04em; text-transform: uppercase; color: var(--paper);
+}
+.compare__row span:not(:first-child) { text-align: center; }
+.compare__row .lbl { color: var(--paper-2); text-align: left; }
+.yes { color: var(--sky-hi); font-weight: 600; }
+.no  { color: var(--paper-4); }
+
+/* Mobile stand-in for .compare — one card per package instead of one row per
+   feature, since a 4-column table has no readable width below ~620px. Hidden
+   until that breakpoint flips the two (see RESPONSIVE section). */
+.compare-cards { display: none; }
+.compare-card {
+  border: 1px solid var(--line);
+  background: rgba(20,27,43,0.62);
+  padding: 1.1rem 1.3rem;
+}
+.compare-card + .compare-card { margin-top: 1rem; }
+.compare-card__title {
+  font-family: var(--display); font-weight: 700;
+  font-size: 1.08rem; letter-spacing: -0.02em;
+  color: var(--paper); margin-bottom: 0.3rem;
+}
+.compare-card__list { display: grid; }
+.compare-card__list li {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding-block: 0.65rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+.compare-card__list li:last-child { border-bottom: 0; }
+.compare-card__list .lbl { color: var(--paper-2); }
+
+/* --------------------------------------------------------------------------
+   14. PORTFOLIO — device mockups
+   -------------------------------------------------------------------------- */
+.work { display: grid; gap: clamp(3.5rem, 8vw, 7rem); }
+
+.work__item {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(1.8rem, 4vw, 3.5rem);
+  align-items: center;
+}
+/* Alternate which side the mockup sits on — and mirror the track sizes with
+   it, so the device cluster keeps the wide column on every row. */
+.work__item:nth-child(even) {
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+}
+.work__item:nth-child(even) .work__info { order: 2; }
+
+.work__info { display: grid; gap: 1rem; align-content: start; }
+.work__badges { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-family: var(--display); font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.36rem 0.72rem;
+  border: 1px solid var(--line-2);
+  color: var(--paper-2);
+}
+/* Work in progress — a real client build that hasn't launched yet. */
+.chip--wip {
+  border-color: rgba(91,155,213,0.45);
+  color: var(--sky-hi);
+  background: rgba(91,155,213,0.14);
+}
+.chip--wip i {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--sky-hi);
+  box-shadow: 0 0 0 3px rgba(91,155,213,0.22);
+  animation: wipPulse 2.4s ease-in-out infinite;
+}
+@keyframes wipPulse { 0%,100%{ box-shadow:0 0 0 3px rgba(91,155,213,0.22);} 50%{ box-shadow:0 0 0 6px rgba(91,155,213,0);} }
+.chip--concept { border-color: rgba(212,160,84,0.42); color: var(--gold-hi); background: rgba(212,160,84,0.09); }
+
+.work__title { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
+/* No diamond bullets here — the plate motif was pulled out of the project
+   meta list along with the other decorative logo marks. The wider column gap
+   is what separates the items now, so it carries the full separation. */
+.work__meta { display: flex; flex-wrap: wrap; gap: 0.45rem 1.6rem; margin-top: 0.3rem; }
+.work__meta li {
+  font-size: 0.8rem; color: var(--paper-3);
+  display: flex; align-items: center;
+}
+
+/* --- The device cluster --- */
+.rig {
+  position: relative;
+  padding: clamp(1.2rem, 3vw, 2.4rem) clamp(1rem, 2.5vw, 2rem) 0;
+}
+.rig::before {
+  content: ""; position: absolute; inset: 6% -4% 12%;
+  background:
+    radial-gradient(ellipse at 40% 40%, rgba(91,155,213,0.20), transparent 62%),
+    radial-gradient(ellipse at 72% 70%, rgba(212,160,84,0.15), transparent 60%);
+  filter: blur(30px); pointer-events: none;
+}
+.rig__row { position: relative; display: block; }
+
+/* Browser / desktop frame */
+.dev-desk {
+  position: relative;
+  border: 1px solid var(--line-2);
+  background: #0b1018;
+  box-shadow: 0 40px 90px -50px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.02) inset;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  width: 86%;
+}
+.dev-desk__bar {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.55rem 0.8rem;
+  background: rgba(28,41,66,0.85);
+  border-bottom: 1px solid var(--line);
+}
+.dev-desk__bar i {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--line-3); flex: none;
+}
+.dev-desk__url {
+  flex: 1; margin-left: 0.5rem;
+  font-family: var(--body); font-size: 0.66rem; color: var(--paper-3);
+  background: rgba(15,20,32,0.8);
+  border-radius: 20px;
+  padding: 0.2rem 0.7rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dev-desk__screen { display: block; width: 100%; background: #0d1219; }
+.dev-desk__screen img, .dev-desk__screen svg { width: 100%; display: block; }
+
+/* Tablet — overlaps bottom-left */
+.dev-tab {
+  position: absolute; left: 2%; bottom: -14%;
+  width: 30%;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  background: #0b1018;
+  padding: 7px 5px;
+  box-shadow: 0 34px 70px -34px rgba(0,0,0,0.95);
+  overflow: hidden;
+}
+.dev-tab__screen { border-radius: 4px; overflow: hidden; background: #0d1219; }
+
+/* Phone — overlaps bottom-right */
+.dev-phone {
+  position: absolute; right: 1%; bottom: -18%;
+  width: 17%;
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  background: #0b1018;
+  padding: 6px 4px 8px;
+  box-shadow: 0 34px 70px -30px rgba(0,0,0,0.95);
+  overflow: hidden;
+}
+.dev-phone__notch {
+  width: 34%; height: 4px; border-radius: 4px;
+  background: var(--line-2); margin: 0 auto 5px;
+}
+.dev-phone__screen { border-radius: 9px; overflow: hidden; background: #0d1219; }
+
+.rig { padding-bottom: clamp(3.5rem, 9vw, 6rem); }
+
+/* --------------------------------------------------------------------------
+   15. ABOUT
+   -------------------------------------------------------------------------- */
+.prose { max-width: 66ch; display: grid; gap: 1.5rem; }
+.prose p { color: var(--paper-2); font-size: clamp(1.02rem, 1.35vw, 1.13rem); line-height: 1.78; }
+.prose p strong { color: var(--paper); font-weight: 600; }
+
+.pull {
+  position: relative;
+  margin: 1.2rem 0;
+  padding: clamp(1.6rem, 3.4vw, 2.4rem) clamp(1.5rem, 3vw, 2.4rem);
+  background: linear-gradient(140deg, rgba(36,51,79,0.7), rgba(15,20,32,0.5));
+  border-left: 3px solid var(--gold);
+}
+.pull p {
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 3vw, 2.05rem);
+  font-weight: 600; line-height: 1.2; letter-spacing: -0.035em;
+  color: var(--paper);
+}
+.pull cite {
+  display: block; margin-top: 1rem;
+  font-family: var(--body); font-style: normal;
+  font-size: 0.84rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gold-hi);
+}
+
+.facts { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line);
+  grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.facts div { background: rgba(20,27,43,0.75); padding: 1.4rem 1.5rem; }
+.facts dt { font-family: var(--display); font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--paper-3); margin-bottom: 0.5rem; }
+.facts dd { margin: 0; font-family: var(--display); font-size: 1.06rem;
+  font-weight: 600; letter-spacing: -0.02em; color: var(--paper); line-height: 1.3; }
+
+.sign { display: flex; align-items: center; gap: 1.1rem; margin-top: 2.5rem;
+  padding-top: 1.8rem; border-top: 1px solid var(--line); }
+.sign__mark { width: 46px; height: 46px; flex: none; }
+.sign__mark img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.sign__txt { display: grid; gap: 0.1rem; }
+.sign__txt b { font-family: var(--display); font-size: 1.02rem; letter-spacing: -0.02em; }
+.sign__txt span { font-size: 0.84rem; color: var(--paper-3); }
+
+/* --------------------------------------------------------------------------
+   16. CONTACT & FORMS
+   -------------------------------------------------------------------------- */
+.contact {
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+}
+
+.reach { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 2rem; }
+.reach__item {
+  background: rgba(20,27,43,0.8);
+  padding: 1.35rem 1.5rem;
+  display: grid; gap: 0.3rem;
+  transition: background 0.35s var(--ease);
+}
+a.reach__item:hover { background: rgba(36,51,79,0.9); }
+.reach__k {
+  font-family: var(--display); font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--paper-3);
+}
+.reach__v { font-family: var(--display); font-size: 1.06rem; font-weight: 600;
+  letter-spacing: -0.02em; color: var(--paper); }
+.reach__v small { display: block; font-family: var(--body); font-weight: 400;
+  font-size: 0.85rem; color: var(--paper-3); letter-spacing: 0; margin-top: 0.25rem; }
+
+.form {
+  background: linear-gradient(175deg, rgba(28,41,66,0.5), rgba(15,20,32,0.9));
+  border: 1px solid var(--line);
+  padding: clamp(1.6rem, 3.4vw, 2.6rem);
+  display: grid; gap: 1.15rem;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 26px), calc(100% - 26px) 100%, 0 100%);
+}
+.form__grid { display: grid; gap: 1.15rem; grid-template-columns: 1fr 1fr; }
+
+/* Wraps everything but the status message so JS can hide the form on a
+   successful submit without also hiding the confirmation it needs to show
+   in its place. Repeats .form's own grid/gap so the internal spacing is
+   unaffected by this being one grid item instead of many. */
+#form-body { display: grid; gap: 1.15rem; }
+
+.field { display: grid; gap: 0.45rem; }
+.field > label {
+  font-family: var(--display); font-size: 0.76rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--paper-3);
+}
+.field input, .field textarea, .field select {
+  width: 100%;
+  font-family: var(--body); font-size: 0.97rem; color: var(--paper);
+  background: rgba(11,15,24,0.72);
+  border: 1px solid var(--line-2);
+  padding: 0.85rem 1rem;
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+  border-radius: 0;
+  -webkit-appearance: none; appearance: none;
+}
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%23f4f1ea' stroke-width='1.6'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px;
+  padding-right: 2.6rem;
+}
+.field select option { background: var(--ink-raise); color: var(--paper); }
+.field textarea { resize: vertical; min-height: 132px; line-height: 1.65; }
+.field input::placeholder, .field textarea::placeholder { color: var(--paper-4); }
+.field input:focus, .field textarea:focus, .field select:focus {
+  border-color: var(--sky); background: rgba(11,15,24,0.95); outline: none;
+}
+.field.is-bad input, .field.is-bad textarea, .field.is-bad select { border-color: #e0736a; }
+.field__err { font-size: 0.78rem; color: #f0968e; display: none; }
+.field.is-bad .field__err { display: block; }
+
+/* The checkbox reuses .field's is-bad/error pattern (so the existing
+   fail()/ok() helpers work on it too), but .field > label's uppercase
+   micro-label styling is meant for the text-input labels above it and would
+   otherwise leak into the checkbox's full-sentence consent copy. */
+.field--check > label.check {
+  text-transform: none;
+  font-family: var(--body);
+  font-weight: 400;
+  letter-spacing: normal;
+  color: inherit;
+}
+.field--check.is-bad .check__box { border-color: #e0736a; }
+
+.check { display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; }
+.check input { position: absolute; opacity: 0; width: 0; height: 0; }
+.check__box {
+  width: 19px; height: 19px; flex: none; margin-top: 0.15rem;
+  border: 1px solid var(--line-3);
+  display: grid; place-items: center;
+  transition: background 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.check__box::after {
+  content: ""; width: 9px; height: 5px;
+  border-left: 2px solid var(--ink); border-bottom: 2px solid var(--ink);
+  transform: rotate(-45deg) scale(0); transform-origin: center;
+  transition: transform 0.25s var(--ease-out);
+}
+.check input:checked + .check__box { background: var(--gold); border-color: var(--gold); }
+.check input:checked + .check__box::after { transform: rotate(-45deg) scale(1); }
+.check input:focus-visible + .check__box { outline: 2px solid var(--sky-hi); outline-offset: 2px; }
+.check span:last-child { font-size: 0.88rem; color: var(--paper-2); line-height: 1.55; }
+
+.form__status {
+  font-size: 0.92rem; padding: 0.9rem 1.1rem;
+  border-left: 3px solid var(--sky);
+  background: rgba(91,155,213,0.1);
+  color: var(--paper);
+}
+.form__status[hidden] { display: none; }
+.form__status.is-ok { border-color: #7ad090; background: rgba(122,208,144,0.1); }
+.form__legal { font-size: 0.79rem; color: var(--paper-3); line-height: 1.6; }
+.form__legal a { color: var(--sky-hi); text-decoration: underline; text-underline-offset: 2px; }
+
+/* Chosen-package pill */
+.picked {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 0.7rem 0.9rem;
+  background: rgba(212,160,84,0.12);
+  border: 1px solid rgba(212,160,84,0.4);
+  font-size: 0.88rem;
+}
+.picked[hidden] { display: none; }
+.picked strong { font-family: var(--display); color: var(--gold-hi); }
+.picked button { color: var(--paper-2); font-size: 1.2rem; line-height: 1; padding: 0 0.25rem; }
+.picked button:hover { color: var(--paper); }
+
+/* --------------------------------------------------------------------------
+   17. CTA BAND
+   -------------------------------------------------------------------------- */
+.cta {
+  position: relative;
+  border: 1px solid var(--line-2);
+  background:
+    radial-gradient(ellipse at 12% 0%, rgba(91,155,213,0.22), transparent 55%),
+    radial-gradient(ellipse at 92% 100%, rgba(212,160,84,0.20), transparent 55%),
+    linear-gradient(150deg, rgba(36,51,79,0.75), rgba(15,20,32,0.92));
+  padding: clamp(2.2rem, 5vw, 4rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+  overflow: hidden;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 34px), calc(100% - 34px) 100%, 0 100%);
+}
+.cta h2 { font-size: clamp(1.7rem, 3.6vw, 2.7rem); margin-bottom: 0.8rem; }
+.cta p { color: var(--paper-2); max-width: 52ch; }
+.cta__plates {
+  position: absolute; right: -40px; top: 50%; transform: translateY(-50%);
+  display: grid; gap: 10px; opacity: 0.16; pointer-events: none;
+}
+.cta__plates i {
+  display: block; width: 200px; height: 44px;
+  clip-path: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
+}
+.cta__plates i:nth-child(1) { background: var(--sky); }
+.cta__plates i:nth-child(2) { background: var(--paper-3); }
+.cta__plates i:nth-child(3) { background: var(--gold); }
+
+/* --------------------------------------------------------------------------
+   18. FAQ
+   -------------------------------------------------------------------------- */
+.faq { display: grid; border-top: 1px solid var(--line); }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+  padding: 1.35rem 0; cursor: pointer; list-style: none;
+  font-family: var(--display); font-weight: 600;
+  font-size: clamp(1rem, 1.7vw, 1.15rem); letter-spacing: -0.02em;
+  transition: color 0.3s var(--ease);
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary:hover { color: var(--sky-hi); }
+.faq summary .pm {
+  width: 22px; height: 22px; flex: none; position: relative;
+}
+.faq summary .pm::before, .faq summary .pm::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  background: var(--gold);
+  transform: translate(-50%, -50%);
+  transition: transform 0.35s var(--ease-out), opacity 0.25s var(--ease);
+}
+.faq summary .pm::before { width: 14px; height: 2px; }
+.faq summary .pm::after  { width: 2px; height: 14px; }
+.faq details[open] summary .pm::after { transform: translate(-50%, -50%) rotate(90deg); opacity: 0; }
+.faq details p { padding-bottom: 1.5rem; color: var(--paper-2); max-width: 72ch; font-size: 0.97rem; }
+
+/* --------------------------------------------------------------------------
+   19. FOOTER
+   -------------------------------------------------------------------------- */
+.footer {
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(15,20,32,0), rgba(28,41,66,0.42));
+  padding-block: clamp(3rem, 6vw, 5rem) 2rem;
+  margin-top: clamp(3rem, 8vw, 6rem);
+}
+.footer__top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) repeat(2, minmax(0, 1fr));
+  gap: clamp(2rem, 5vw, 4rem);
+  padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  border-bottom: 1px solid var(--line);
+}
+.footer__say {
+  font-family: var(--display); font-weight: 600;
+  font-size: clamp(1.15rem, 2.2vw, 1.55rem); letter-spacing: -0.03em;
+  line-height: 1.25; color: var(--paper);
+  margin: 1.6rem 0 1.2rem; max-width: 24ch;
+}
+.footer__col h4 {
+  font-family: var(--display); font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--paper-3);
+  margin-bottom: 1.1rem;
+}
+.footer__col ul { display: grid; gap: 0.7rem; }
+.footer__col a { color: var(--paper-2); font-size: 0.94rem; transition: color 0.25s var(--ease); }
+.footer__col a:hover { color: var(--gold-hi); }
+
+.footer__bottom {
+  display: flex; flex-wrap: wrap; gap: 1rem 2rem;
+  align-items: center; justify-content: space-between;
+  padding-top: 1.8rem;
+}
+.footer__bottom p { font-size: 0.82rem; color: var(--paper-3); }
+.footer__legal { display: flex; flex-wrap: wrap; gap: 1.4rem; }
+.footer__legal a { font-size: 0.82rem; color: var(--paper-3); }
+.footer__legal a:hover { color: var(--paper); }
+.footer__note {
+  margin-top: 1.4rem; font-size: 0.76rem; color: var(--paper-4);
+  line-height: 1.6; max-width: 80ch;
+}
+
+/* --------------------------------------------------------------------------
+   20. PAGE HEADER (inner pages)
+   -------------------------------------------------------------------------- */
+.phead {
+  position: relative;
+  padding-block: clamp(3rem, 7vw, 5.5rem) clamp(2.5rem, 5vw, 4rem);
+  overflow: hidden;
+}
+/* Single column since the decorative plate trio that used to sit in the second
+   one is gone — as a two-column grid it would still reserve that 0.75fr and
+   hold the headline to ~60% of the shell for no reason. */
+.phead__grid { display: grid; }
+.phead__title { font-size: clamp(2.6rem, 7vw, 5rem); line-height: 0.96; letter-spacing: -0.045em; }
+
+/* --------------------------------------------------------------------------
+   21. LEGAL PAGES
+   -------------------------------------------------------------------------- */
+.legal { max-width: 76ch; }
+.legal h2 {
+  font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+  margin: 2.6rem 0 0.9rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--line);
+}
+.legal h3 { font-size: 1.06rem; margin: 1.8rem 0 0.6rem; }
+.legal p, .legal li { color: var(--paper-2); font-size: 0.985rem; line-height: 1.75; }
+.legal p + p { margin-top: 1rem; }
+.legal ul { display: grid; gap: 0.5rem; margin: 1rem 0; }
+.legal ul li { display: flex; gap: 0.7rem; }
+.legal ul li::before {
+  content: ""; width: 14px; height: 7px; flex: none; margin-top: 0.6rem;
+  background: var(--line-3);
+  clip-path: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
+}
+.legal a { color: var(--sky-hi); text-decoration: underline; text-underline-offset: 2px; }
+.notice {
+  border-left: 3px solid var(--gold);
+  background: rgba(212,160,84,0.09);
+  padding: 1.1rem 1.3rem; margin: 1.5rem 0;
+  font-size: 0.92rem; color: var(--paper-2);
+}
+.ph { color: var(--gold-hi); font-family: var(--display); font-size: 0.9em; }
+
+/* --------------------------------------------------------------------------
+   22. REVEAL ANIMATION
+   -------------------------------------------------------------------------- */
+.rv {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.85s var(--ease-out), transform 0.85s var(--ease-out);
+  transition-delay: var(--d, 0ms);
+}
+.rv.in { opacity: 1; transform: none; }
+
+/* --------------------------------------------------------------------------
+   23. RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 1080px) {
+  .hero__grid { grid-template-columns: 1fr; gap: clamp(2.5rem, 7vw, 4rem); }
+  .stage { max-width: 540px; margin-inline: auto; width: 100%; }
+  /* Single column: the stage is its own row, so there is no spare height to
+     pin against. The graphic scrolls with the page and main.js drives --fan
+     from how far it has climbed the viewport instead (mode 'view'), so the
+     slabs still open on scroll here. This value is only the resting state for
+     when the script never runs — the slabs on their plain grid positions. */
+  .stage__pin { position: static; }
+  .stack { --fan: 0.52; }
+  .head--split { grid-template-columns: 1fr; align-items: start; }
+  .contact { grid-template-columns: 1fr; }
+  /* Matches the specificity of the alternating rule above so both row
+     variants collapse to a single column. */
+  .work__item,
+  .work__item:nth-child(even) { grid-template-columns: 1fr; }
+  .work__item:nth-child(even) .work__info { order: 0; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .footer__top { grid-template-columns: 1fr 1fr; }
+  .footer__brand { grid-column: 1 / -1; }
+  .row { grid-template-columns: 64px minmax(0, 1fr); }
+  .row > *:nth-child(3) { grid-column: 2; }
+  .row.row--single { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); }
+}
+
+/* Navigation collapses earlier than the rest of the layout: with six links
+   plus the CTA the row needs ~980px of its own, so below ~1065px viewport it
+   would collide with the brand lockup (or wrap onto two lines). */
+@media (max-width: 1100px) {
+  .burger { display: flex; }
+  .mainnav {
+    position: fixed; inset: 0 0 0 auto;
+    width: min(360px, 86vw);
+    flex-direction: column; align-items: stretch; justify-content: flex-start;
+    gap: 0;
+    padding: 6.5rem 1.75rem 2.5rem;
+    background: rgba(11,15,24,0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-left: 1px solid var(--line);
+    transform: translateX(100%);
+    /* Hidden for real when closed: keeps the links out of the tab order and
+       out of the accessibility tree instead of merely parking them offscreen. */
+    visibility: hidden;
+    transition: transform 0.5s var(--ease-out), visibility 0s linear 0.5s;
+    overflow-y: auto;
+    z-index: 55;
+  }
+  .mainnav.is-open {
+    transform: none;
+    visibility: visible;
+    transition: transform 0.5s var(--ease-out), visibility 0s linear 0s;
+  }
+  .mainnav a {
+    padding: 1.05rem 0;
+    font-size: 1.16rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .mainnav a:not(.btn)::after { display: none; }
+  .mainnav a[aria-current="page"] { color: var(--gold-hi); }
+  .mainnav .btn {
+    margin: 1.5rem 0 0; justify-content: center;
+    border-bottom: 0; font-size: 0.95rem; padding: 1rem 1.5rem;
+  }
+  .nav-veil {
+    position: fixed; inset: 0; z-index: 50;
+    background: rgba(6,9,15,0.6);
+    backdrop-filter: blur(2px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s var(--ease);
+  }
+  .nav-veil.is-on { opacity: 1; pointer-events: auto; }
+  body.nav-locked { overflow: hidden; }
+}
+
+/* Layout breakpoints unrelated to the navigation. */
+@media (max-width: 860px) {
+  .cta { grid-template-columns: 1fr; }
+  .cta__plates { display: none; }
+  .compare__row { grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(0, 0.6fr)); font-size: 0.82rem; }
+  .form__grid { grid-template-columns: 1fr; }
+  .footer__top { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 620px) {
+  :root { --band: clamp(3.5rem, 12vw, 5rem); }
+  .brand__mark { width: 42px; height: 42px; }
+  .brand__name { font-size: 1.5rem; }
+  .brand__tag { font-size: 0.47rem; letter-spacing: 0.2em; }
+  .hero__proof { gap: 0 1.4rem; }
+  .hero__proof div { min-width: 46%; }
+  .btn { width: 100%; }
+  .btn-row { flex-direction: column; }
+  .facts { grid-template-columns: minmax(0, 1fr); }
+  .row { grid-template-columns: 1fr; gap: 0.6rem; }
+  .row > *:nth-child(3) { grid-column: 1; }
+  .row.row--single { grid-template-columns: 1fr; gap: 0.6rem; }
+  .index { font-size: 2.2rem; }
+  .step { grid-template-columns: 40px minmax(0, 1fr); gap: 1rem; }
+  .step__mark { width: 40px; height: 40px; font-size: 0.82rem; }
+  .flow::before { left: 19px; }
+  .compare { display: none; }
+  .compare-cards { display: grid; gap: 1rem; }
+  .dev-desk { width: 100%; }
+  .dev-tab { width: 34%; bottom: -12%; }
+  .dev-phone { width: 20%; bottom: -15%; }
+  .footer__bottom { flex-direction: column; align-items: flex-start; }
+}
+
+/* --------------------------------------------------------------------------
+   24. MOTION PREFERENCES
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .rv { opacity: 1; transform: none; }
+}
+
+/* Now that narrow layouts scrub too, the open resting position applies at every
+   width — this has to sit after the max-width:1080px block so it wins there. */
+@media (prefers-reduced-motion: reduce) {
+  .stack { --fan: 1; }
+}
+
+/* No scrubbing and no pinning: the slabs simply rest open and stay there, and
+   main.js checks the same query and never starts.
+
+   The track sizing has to be undone along with the sticky. Left alone, a static
+   pin would sit at the top of a track still stretched to the copy column — and
+   now also floored at 148vh — stranding the graphic above a tall column of
+   empty space. Resetting both puts the stage back to its own height. */
+@media (prefers-reduced-motion: reduce) and (min-width: 1081px) {
+  .stage { align-self: center; min-height: 0; }
+  .stage__pin { position: static; }
+}
+
+/* --------------------------------------------------------------------------
+   25. PRINT
+   -------------------------------------------------------------------------- */
+@media print {
+  .masthead, .footer, .aura, .grain, .stage { display: none; }
+  body { background: #fff; color: #000; }
+}
