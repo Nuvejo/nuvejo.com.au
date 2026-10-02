@@ -1070,6 +1070,7 @@ p.card__say {
   background: var(--line-2); margin: 0 auto 5px;
 }
 .dev-phone__screen { border-radius: 9px; overflow: hidden; background: #0d1219; }
+.rig__link { display: block; }
 
 .rig { padding-bottom: clamp(3.5rem, 9vw, 6rem); }
 
