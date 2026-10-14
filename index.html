@@ -22,7 +22,8 @@
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+<noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" /></noscript>
 <link rel="stylesheet" href="assets/css/styles.css" />
 
 <script type="application/ld+json">
@@ -131,8 +132,8 @@
 <!-- ============ MASTHEAD ============ -->
 <header class="masthead">
   <div class="shell masthead__in">
-    <a class="brand" href="/" aria-label="Nuvejo — home">
-      <span class="brand__mark"><img src="assets/img/nuvejo-mark.png" alt="Nuvejo" /></span>
+    <a class="brand" href="/" aria-label="nuvejo Design.Growth.Trust. - Home">
+      <span class="brand__mark"><img src="assets/img/nuvejo-mark.webp" alt="Nuvejo" /></span>
       <span class="brand__type">
         <span class="brand__name">nuvejo</span>
         <span class="brand__tag">Design<i>.</i>Growth<i>.</i>Trust<i>.</i></span>
@@ -515,8 +516,8 @@
   <div class="shell">
     <div class="footer__top">
       <div class="footer__brand">
-        <a class="brand" href="/" aria-label="Nuvejo — home">
-          <span class="brand__mark"><img src="assets/img/nuvejo-mark.png" alt="Nuvejo" /></span>
+        <a class="brand" href="/" aria-label="nuvejo Design.Growth.Trust. - Home">
+          <span class="brand__mark"><img src="assets/img/nuvejo-mark.webp" alt="Nuvejo" /></span>
           <span class="brand__type">
             <span class="brand__name">nuvejo</span>
             <span class="brand__tag">Design<i>.</i>Growth<i>.</i>Trust<i>.</i></span>
@@ -530,7 +531,7 @@
       </div>
 
       <div class="footer__col">
-        <h4>Pages</h4>
+        <h4 aria-level="3">Pages</h4>
         <ul>
           <li><a href="/">Home</a></li>
           <li><a href="pricing-services">Pricing &amp; Services</a></li>
@@ -542,7 +543,7 @@
       </div>
 
       <div class="footer__col">
-        <h4>Direct</h4>
+        <h4 aria-level="3">Direct</h4>
         <ul>
           <li><a href="contact">Start a project</a></li>
           <li><a href="privacy-policy">Privacy Policy</a></li>
