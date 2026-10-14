@@ -1567,6 +1567,3 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
 .work__item--solo { grid-template-columns: minmax(0, 1fr); }
 .work__item--solo .work__info { max-width: 64ch; }
 .star--alt { font-size: 0.95em; vertical-align: baseline; margin-left: 0.2rem; }
-.stack__txt { position: relative; min-width: 0; }
-/* Sub-line hangs under the word (so the words keep their original spacing) and only fades in once the stack is almost fully open and there is room for it. */
-.stack__txt small { position: absolute; left: 0; top: 100%; width: 7.2em; margin-top: 0.1rem; font-family: var(--body); font-size: clamp(0.6rem, 0.85vw, 0.74rem); line-height: 1.3; letter-spacing: 0; color: var(--paper-3); opacity: clamp(0, calc((var(--fan, 0) - 0.85) * 6.7), 1); }
