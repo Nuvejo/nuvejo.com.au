@@ -343,8 +343,7 @@
       if (submitBtn) submitBtn.disabled = true;
 
       // Sent as JSON to our Cloudflare Pages Function at /api/contact, which
-      // relays it via the Brevo API. Netlify Forms is no longer in the
-      // picture post-migration to Cloudflare Pages.
+      // relays it via the Brevo API.
       var payload = {
         name: name.value.trim(),
         email: mail.value.trim(),

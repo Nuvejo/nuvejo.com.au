@@ -28,10 +28,7 @@ export async function onRequestPost(context) {
       },
       body: JSON.stringify({
         sender: { name: "Nuvejo Contact Form", email: "kontakt@nuvejo.com.au" },
-        to: [
-          { email: "marco@nuvejo.com.au", name: "Marco" },
-          { email: "ma.andriani92@gmail.com", name: "Marco" },
-        ],
+        to: [{ email: "marco@nuvejo.com.au", name: "Marco" }],
         replyTo: { email: email, name: name },
         subject: `New enquiry from ${name}`,
         htmlContent: htmlContent,
@@ -46,7 +43,8 @@ export async function onRequestPost(context) {
       });
     }
 
-    return new Response(JSON.stringify({ success: true }), {
+    const sent = await response.json().catch(() => ({}));
+    return new Response(JSON.stringify({ success: true, messageId: sent.messageId || null }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
