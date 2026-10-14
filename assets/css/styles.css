@@ -1556,3 +1556,13 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
   .masthead, .footer, .aura, .grain, .stage { display: none; }
   body { background: #fff; color: #000; }
 }
+
+/* Pricing: 12-month plan line, footnotes, link in the contact card; Work: text-only card */
+.tier__plan { margin: 0 0 0.35rem; font-size: 0.83rem; line-height: 1.5; color: var(--paper-2); }
+.tier__plan strong { color: var(--gold-hi); font-weight: 600; }
+.fnotes { display: grid; gap: 0.6rem; margin-top: 1.4rem; max-width: 88ch; }
+.fnotes ul { display: grid; gap: 0.25rem; padding-left: 1.1rem; list-style: disc; }
+.fnotes .star { margin-right: 0.2rem; }
+.reach__v a { color: var(--sky-hi); text-decoration: underline; text-underline-offset: 3px; }
+.work__item--solo { grid-template-columns: minmax(0, 1fr); }
+.work__item--solo .work__info { max-width: 64ch; }

@@ -28,7 +28,10 @@ export async function onRequestPost(context) {
       },
       body: JSON.stringify({
         sender: { name: "Nuvejo Contact Form", email: "kontakt@nuvejo.com.au" },
-        to: [{ email: "ma.andriani92@gmail.com", name: "Marco" }],
+        to: [
+          { email: "marco@nuvejo.com.au", name: "Marco" },
+          { email: "ma.andriani92@gmail.com", name: "Marco" },
+        ],
         replyTo: { email: email, name: name },
         subject: `New enquiry from ${name}`,
         htmlContent: htmlContent,
