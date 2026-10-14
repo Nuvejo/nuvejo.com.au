@@ -1566,3 +1566,4 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
 .reach__v a { color: var(--sky-hi); text-decoration: underline; text-underline-offset: 3px; }
 .work__item--solo { grid-template-columns: minmax(0, 1fr); }
 .work__item--solo .work__info { max-width: 64ch; }
+.star--alt { font-size: 0.95em; vertical-align: baseline; margin-left: 0.2rem; }
