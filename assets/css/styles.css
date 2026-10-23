@@ -1565,3 +1565,31 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
 .fnotes .star { margin-right: 0.2rem; }
 .reach__v a { color: var(--sky-hi); text-decoration: underline; text-underline-offset: 3px; }
 .star--alt { font-size: 0.95em; vertical-align: baseline; margin-left: 0.2rem; }
+
+/* Pricing: small total line under the 12-month figure on the build cards */
+.tier__total { margin: -0.1rem 0 0.35rem; font-size: 0.74rem; line-height: 1.4; color: var(--paper-3); }
+.fnotes li { line-height: 1.5; }
+
+/* Pricing, phone only (same breakpoint as the compare cards above):
+   - the "Side by side" block repeats what the package cards already say,
+     so it is hidden together with its heading and surcharge note;
+   - the Website Partnership price row becomes one inline line so both cards
+     share the same layout: small "from", big amount, small AUD and / month on
+     one baseline, footnote markers as superscripts right after. */
+@media (max-width: 620px) {
+  .cmp-only { display: none; }
+  .tiers--care .tier__price { display: block; line-height: 1.2; }
+  .tiers--care .tier__price .pre { margin-right: 0.4rem; }
+  .tiers--care .tier__price .cur {
+    font-size: 0.9rem; font-weight: 500; letter-spacing: 0; color: var(--paper-3); margin-left: 0.2rem;
+  }
+  .tiers--care .tier__price .per { margin-left: 0.3rem; }
+  .tiers--care .tier__price .star { margin-left: 0.15rem; font-size: 0.72em; vertical-align: super; }
+}
+
+/* Build package cards: the three descriptions now run to different lengths.
+   Reserve four lines (the common case) wherever the cards sit side by side,
+   so the price rows line up instead of each following its own description. */
+@media (min-width: 630px) {
+  .tiers:not(.tiers--care) .tier__for { min-height: calc(4 * 1.72 * 0.86rem); }
+}
