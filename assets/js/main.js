@@ -210,7 +210,7 @@
     // would light up the picked-package chip while leaving the select and
     // the emailed "interest" line blank.
     var q = new URLSearchParams(window.location.search).get('package');
-    var allowed = ['Starter', 'Business', 'Premium'];
+    var allowed = ['Starter', 'Business', 'Premium', 'Website Partnership Essential', 'Website Partnership Growth'];
     if (q && allowed.indexOf(q) !== -1) {
       showPicked(q);
       var sel = $('#interest');
@@ -225,6 +225,28 @@
 
     var status   = $('#form-status');
     var formBody = $('#form-body');
+
+    // Cloudflare Turnstile: only active when #turnstile-box has a data-sitekey.
+    // With an empty key nothing is loaded and the form works as before.
+    var tsBox = $('#turnstile-box');
+    var tsToken = '';
+    if (tsBox && tsBox.getAttribute('data-sitekey')) {
+      window.onNuvejoTurnstile = function () {
+        window.turnstile.render(tsBox, {
+          sitekey: tsBox.getAttribute('data-sitekey'),
+          theme: 'dark',
+          callback: function (t) { tsToken = t; },
+          'expired-callback': function () { tsToken = ''; },
+          'error-callback': function () { tsToken = ''; }
+        });
+      };
+      var tsScript = document.createElement('script');
+      tsScript.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onNuvejoTurnstile&render=explicit';
+      tsScript.async = true;
+      document.head.appendChild(tsScript);
+    } else {
+      tsBox = null;
+    }
 
     function fail(field, msg) {
       var wrap = field.closest('.field');
@@ -316,8 +338,20 @@
         email: mail.value.trim(),
         message: msg.value.trim(),
         business: ($('#f-business') ? $('#f-business').value.trim() : ''),
-        interest: ($('#interest') ? $('#interest').value : '')
+        interest: ($('#interest') ? $('#interest').value : ''),
+        // Honeypot: hidden from people, so it stays empty unless a bot fills it in.
+        'bot-field': (form.elements['bot-field'] ? form.elements['bot-field'].value : '')
       };
+      if (tsBox && tsToken) payload['cf-turnstile-response'] = tsToken;
+      if (tsBox && !tsToken) {
+        if (status) {
+          status.hidden = false;
+          status.classList.remove('is-ok');
+          status.textContent = 'Please complete the quick security check first.';
+        }
+        if (submitBtn) submitBtn.disabled = false;
+        return;
+      }
 
       fetch('/api/contact', {
         method: 'POST',
@@ -333,10 +367,12 @@
         }
       }).catch(function () {
         if (submitBtn) submitBtn.disabled = false;
+        // Turnstile tokens are single use, so ask for a fresh one.
+        if (tsBox && window.turnstile) { tsToken = ''; window.turnstile.reset(); }
         if (status) {
           status.hidden = false;
           status.classList.remove('is-ok');
-          status.textContent = 'Something went wrong — please try again in a moment.';
+          status.textContent = 'Something went wrong. Please try again in a moment.';
         }
       });
     });

@@ -232,6 +232,8 @@
             <option value="Starter">Starter package</option>
             <option value="Business">Business package</option>
             <option value="Premium">Premium package</option>
+            <option value="Website Partnership Essential">Website Partnership: Essential</option>
+            <option value="Website Partnership Growth">Website Partnership: Growth</option>
             <option value="Not sure yet">Not sure yet — I'd like your advice</option>
           </select>
           <span class="field__err">Please choose what it's about.</span>
@@ -251,6 +253,10 @@
           </label>
           <span class="field__err">Please confirm the privacy policy first.</span>
         </div>
+
+        <!-- Cloudflare Turnstile placeholder. Stays empty (and loads nothing) until a site key
+             is put in data-sitekey. See the setup notes handed over with this change. -->
+        <div id="turnstile-box" class="cf-turnstile-box" data-sitekey=""></div>
 
         <button type="submit" class="btn btn--gold btn--wide">
           Send enquiry
