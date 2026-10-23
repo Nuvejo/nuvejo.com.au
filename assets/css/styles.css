@@ -455,6 +455,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .mainnav a[aria-current="page"]::after { opacity: 0.85; transform: translateY(0) scaleX(1); }
 .mainnav a[aria-current="page"] { color: var(--paper); }
 .mainnav .btn { margin-left: 0.6rem; }
+/* .mainnav a (above) would otherwise override the button colour and leave pale text on the gold gradient */
+.mainnav .btn { color: var(--btn-fg); }
 
 .burger {
   display: none;
