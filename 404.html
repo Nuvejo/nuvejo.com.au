@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Page not found | Web design | Nuvejo</title>
+<meta name="description" content="That page could not be found. Head back to the Nuvejo home page, pricing or contact page." />
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#0f1420" />
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+<noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" /></noscript>
+<link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="aura" aria-hidden="true"><span></span><span></span><span></span></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="nav-veil" aria-hidden="true"></div>
+
+<header class="masthead">
+  <div class="shell masthead__in">
+    <a class="brand" href="/" aria-label="nuvejo Design.Growth.Trust. - Home">
+      <span class="brand__mark"><img src="/assets/img/nuvejo-mark.webp" alt="Nuvejo" /></span>
+      <span class="brand__type">
+        <span class="brand__name">nuvejo</span>
+        <span class="brand__tag">Design<i>.</i>Growth<i>.</i>Trust<i>.</i></span>
+      </span>
+    </a>
+    <button class="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mainnav"><i></i><i></i><i></i></button>
+    <nav class="mainnav" id="mainnav" aria-label="Main navigation">
+      <a href="/">Home</a>
+      <a href="/pricing-services">Pricing &amp; Services</a>
+      <a href="/seo-support">SEO &amp; Support</a>
+      <a href="/work">Work</a>
+      <a href="/about">About Me</a>
+      <a href="/contact">Contact</a>
+      <a href="/contact" class="btn btn--gold btn--sm">Start a project</a>
+    </nav>
+  </div>
+</header>
+<script>
+/* Menu drawer. Bound here, as soon as the header exists, so a tap works
+   before the rest of the page and assets/js/main.js have finished loading. */
+(function () {
+  var burger = document.querySelector('.burger');
+  var nav = document.getElementById('mainnav');
+  var veil = document.querySelector('.nav-veil');
+  if (!burger || !nav) return;
+  function setNav(open) {
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    nav.classList.toggle('is-open', open);
+    if (veil) veil.classList.toggle('is-on', open);
+    document.body.classList.toggle('nav-locked', open);
+  }
+  burger.addEventListener('click', function () {
+    setNav(burger.getAttribute('aria-expanded') !== 'true');
+  });
+  if (veil) veil.addEventListener('click', function () { setNav(false); });
+  nav.addEventListener('click', function (e) {
+    if (e.target.closest('a')) setNav(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+      setNav(false);
+      burger.focus();
+    }
+  });
+  // Reset the drawer if the viewport grows back to desktop (matches the 1100px CSS breakpoint).
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 1100) setNav(false);
+  });
+})();
+</script>
+
+<main id="main">
+
+  <section class="phead">
+    <div class="shell phead__grid">
+      <div>
+        <p class="eyebrow">Error 404</p>
+        <h1 class="phead__title">This page<br />doesn't <span class="beamed">exist.</span></h1>
+        <p class="lede" style="margin-top:1.5rem">
+          The link may be old or mistyped. Here are the places most people are looking for.
+        </p>
+        <div class="btn-row" style="margin-top:2rem">
+          <a href="/" class="btn btn--solid">Back to home</a>
+          <a href="/pricing-services" class="btn btn--line">See pricing</a>
+          <a href="/contact" class="btn btn--line">Contact</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="shell">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a class="brand" href="/" aria-label="nuvejo Design.Growth.Trust. - Home">
+          <span class="brand__mark"><img src="/assets/img/nuvejo-mark.webp" alt="Nuvejo" /></span>
+          <span class="brand__type">
+            <span class="brand__name">nuvejo</span>
+            <span class="brand__tag">Design<i>.</i>Growth<i>.</i>Trust<i>.</i></span>
+          </span>
+        </a>
+        <p class="footer__say">Design. Growth. Trust.</p>
+        <p class="muted" style="max-width: 40ch; font-size: .93rem">
+          Three words on my logo, and the order I work in: design it first,
+          build on it as your business grows — and stay reachable.
+        </p>
+      </div>
+      <div class="footer__col">
+        <h4 aria-level="3">Pages</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/pricing-services">Pricing &amp; Services</a></li>
+          <li><a href="/seo-support">SEO &amp; Support</a></li>
+          <li><a href="/work">Work</a></li>
+          <li><a href="/about">About Me</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4 aria-level="3">Direct</h4>
+        <ul>
+          <li><a href="/contact">Start a project</a></li>
+          <li><a href="/privacy-policy">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>
+        © <span data-year>2026</span> Nuvejo. All rights reserved.<br />
+        ABN: 51 498 278 849 · Sunshine Coast, QLD, Australia
+      </p>
+      <nav class="footer__legal" aria-label="Legal">
+        <a href="/privacy-policy">Privacy Policy</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>
