@@ -69,6 +69,40 @@
     </nav>
   </div>
 </header>
+<script>
+/* Menu drawer. Bound here, as soon as the header exists, so a tap works
+   before the rest of the page and assets/js/main.js have finished loading. */
+(function () {
+  var burger = document.querySelector('.burger');
+  var nav = document.getElementById('mainnav');
+  var veil = document.querySelector('.nav-veil');
+  if (!burger || !nav) return;
+  function setNav(open) {
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    nav.classList.toggle('is-open', open);
+    if (veil) veil.classList.toggle('is-on', open);
+    document.body.classList.toggle('nav-locked', open);
+  }
+  burger.addEventListener('click', function () {
+    setNav(burger.getAttribute('aria-expanded') !== 'true');
+  });
+  if (veil) veil.addEventListener('click', function () { setNav(false); });
+  nav.addEventListener('click', function (e) {
+    if (e.target.closest('a')) setNav(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+      setNav(false);
+      burger.focus();
+    }
+  });
+  // Reset the drawer if the viewport grows back to desktop (matches the 1100px CSS breakpoint).
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 1100) setNav(false);
+  });
+})();
+</script>
 
 <main id="main">
   <section class="phead">

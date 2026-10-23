@@ -21,41 +21,8 @@
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  /* ------------------------------------------------------------------
-     Mobile navigation drawer
-     ------------------------------------------------------------------ */
-  var burger = $('.burger');
-  var nav    = $('.mainnav');
-  var veil   = $('.nav-veil');
-
-  function setNav(open) {
-    if (!burger || !nav) return;
-    burger.setAttribute('aria-expanded', String(open));
-    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-    nav.classList.toggle('is-open', open);
-    if (veil) veil.classList.toggle('is-on', open);
-    document.body.classList.toggle('nav-locked', open);
-  }
-
-  if (burger && nav) {
-    burger.addEventListener('click', function () {
-      setNav(burger.getAttribute('aria-expanded') !== 'true');
-    });
-    if (veil) veil.addEventListener('click', function () { setNav(false); });
-    nav.addEventListener('click', function (e) {
-      if (e.target.closest('a')) setNav(false);
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
-        setNav(false);
-        burger.focus();
-      }
-    });
-    // Reset the drawer if the viewport grows back to desktop.
-    window.addEventListener('resize', function () {
-      if (window.innerWidth > 860) setNav(false);
-    });
-  }
+  /* The mobile menu drawer is bound by a small inline script right after the
+     header in each page, so it works before this file has loaded. */
 
   /* ------------------------------------------------------------------
      Scroll reveal — staggered per group
