@@ -210,7 +210,7 @@
     // would light up the picked-package chip while leaving the select and
     // the emailed "interest" line blank.
     var q = new URLSearchParams(window.location.search).get('package');
-    var allowed = ['Starter', 'Business', 'Premium', 'Website Partnership Essential', 'Website Partnership Growth'];
+    var allowed = ['Starter', 'Business', 'Premium', 'Website Partnership', 'Website Partnership Essential', 'Website Partnership Growth'];
     if (q && allowed.indexOf(q) !== -1) {
       showPicked(q);
       var sel = $('#interest');
