@@ -1523,6 +1523,7 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
   .step { grid-template-columns: 40px minmax(0, 1fr); gap: 1rem; }
   .step__mark { width: 40px; height: 40px; font-size: 0.82rem; }
   .flow::before { left: 19px; }
+  .cmp-only { display: none; }
   .compare { display: none; }
   .compare-cards { display: grid; gap: 1rem; }
   .dev-desk { width: 100%; }
