@@ -46,13 +46,13 @@
   --body:    "Inter", "Segoe UI", system-ui, sans-serif;
 
   /* Rhythm */
-  --shell:   1240px;
+  --shell:   clamp(77.5rem, 90vw, 100rem);   /* fluid: 90vw, floor = old 1240px, cap grows with root size */
   --gutter:  clamp(1.25rem, 4vw, 3rem);
   --band:    clamp(4.5rem, 11vw, 9.5rem);
 
-  --r-sm: 4px;
-  --r-md: 10px;
-  --r-lg: 18px;
+  --r-sm: 0.25rem;
+  --r-md: 0.625rem;
+  --r-lg: 1.125rem;
 
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -74,6 +74,14 @@ html {
   overflow-x: hidden;
   background: var(--ink);
 }
+
+/* Root size scales with the screen so everything built in rem/clamp grows with it
+   (no zoom/transform: browser zoom and user font settings keep working). */
+@media (min-width: 1600px) { html { font-size: 112.5%; } }
+@media (min-width: 1920px) { html { font-size: 125%; } }
+@media (min-width: 2560px) { html { font-size: 137.5%; } }
+@media (min-width: 3440px) { html { font-size: 150%; } }
+@media (min-width: 3840px) { html { font-size: 162.5%; } }
 
 body {
   margin: 0;
@@ -177,8 +185,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
-.shell--wide { max-width: 1480px; }
-.shell--narrow { max-width: 820px; }
+.shell--wide { max-width: clamp(92.5rem, 94vw, 118rem); }
+.shell--narrow { max-width: 51.25rem; }
 
 .band { padding-block: var(--band); position: relative; }
 .band--tight { padding-block: clamp(3rem, 7vw, 5.5rem); }
@@ -202,7 +210,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   margin: 0 0 1.4rem;
 }
 .eyebrow::before {
-  content: ""; width: 26px; height: 8px; flex: none;
+  content: ""; width: 1.625rem; height: 0.5rem; flex: none;
   background: linear-gradient(90deg, var(--sky), var(--sky-lo));
   clip-path: polygon(0 50%, 22% 0, 100% 0, 78% 100%, 0 100%);
 }
@@ -273,7 +281,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* A single isometric plate used as a bullet / marker */
 .plate-dot {
-  width: 18px; height: 9px; flex: none; display: block;
+  width: 1.125rem; height: 0.5625rem; flex: none; display: block;
   background: linear-gradient(90deg, var(--sky), var(--sky-lo));
   clip-path: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
 }
@@ -290,7 +298,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .seam__stack { display: grid; gap: 3px; flex: none; }
 .seam__stack i {
-  display: block; width: 30px; height: 7px;
+  display: block; width: 1.875rem; height: 0.4375rem;
   clip-path: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
 }
 .seam__stack i:nth-child(1) { background: var(--plate-1a); }
@@ -363,7 +371,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%); }
 .btn--wide { width: 100%; }
 
-.btn__ico { width: 17px; height: 17px; flex: none; transition: transform 0.35s var(--ease-out); }
+.btn__ico { width: 1.0625rem; height: 1.0625rem; flex: none; transition: transform 0.35s var(--ease-out); }
 .btn:hover .btn__ico { transform: translateX(3px); }
 
 .btn-row { display: flex; flex-wrap: wrap; gap: 0.85rem; }
@@ -379,7 +387,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   transition: background-size 0.4s var(--ease-out);
 }
 .tlink:hover { background-size: 100% 1px; }
-.tlink svg { width: 15px; height: 15px; }
+.tlink svg { width: 0.9375rem; height: 0.9375rem; }
 
 /* --------------------------------------------------------------------------
    8. BRAND LOCKUP
@@ -389,7 +397,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   flex: none;
 }
 /* Square box to match the mark's native 1:1 crop from the source artwork. */
-.brand__mark { display: block; width: 48px; height: 48px; flex: none; }
+.brand__mark { display: block; width: 3rem; height: 3rem; flex: none; }
 .brand__mark img {
   width: 100%; height: 100%; object-fit: contain; display: block;
   transition: transform 0.4s var(--ease-out), filter 0.4s var(--ease);
@@ -404,7 +412,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .brand__tag {
   font-family: var(--display);
-  font-size: 0.535rem; font-weight: 500;
+  font-size: 0.6rem; font-weight: 500;
   letter-spacing: 0.235em; text-transform: uppercase;
   color: var(--paper-3); line-height: 1;
 }
@@ -443,7 +451,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .mainnav a:not(.btn)::after {
   content: ""; position: absolute; left: 0.95rem; right: 0.95rem; bottom: 0.3rem;
-  height: 6px;
+  height: 0.375rem;
   background: linear-gradient(90deg, var(--sky), var(--sky-lo));
   clip-path: polygon(0 50%, 12% 0, 100% 0, 88% 100%, 0 100%);
   opacity: 0; transform: translateY(4px) scaleX(0.5);
@@ -460,14 +468,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 .burger {
   display: none;
-  width: 46px; height: 46px;
+  width: 2.875rem; height: 2.875rem;
   border: 1px solid var(--line-2);
   align-items: center; justify-content: center;
   flex-direction: column; gap: 5px;
   flex: none;
 }
 .burger i {
-  display: block; width: 20px; height: 2px; background: var(--paper);
+  display: block; width: 1.25rem; height: 2px; background: var(--paper);
   transition: transform 0.4s var(--ease-out), opacity 0.25s var(--ease);
 }
 .burger[aria-expanded="true"] i:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -556,7 +564,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
    push the page down. Capped in px so tall monitors don't turn the hero into
    an endless scroll. */
 @media (min-width: 1081px) {
-  .stage { min-height: min(165vh, 1360px); }
+  .stage { min-height: min(165vh, 85rem); }
 }
 .stage__pin {
   position: sticky;
@@ -564,7 +572,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
      mid-screen. The fallback approximates the same thing (half the viewport
      less roughly half the graphic) so the frame before the script lands — and
      the whole session, if it never does — sits within a few pixels of it. */
-  top: var(--pin-top, calc(50vh - 155px));
+  top: var(--pin-top, calc(50vh - 9.7rem));
 }
 .stage__glow {
   position: absolute; inset: -18% -12%;
@@ -580,7 +588,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   background-image:
     linear-gradient(var(--line) 1px, transparent 1px),
     linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 44px 44px;
+  background-size: 2.75rem 2.75rem;
   -webkit-mask-image: radial-gradient(ellipse at 44% 50%, #000 22%, transparent 72%);
           mask-image: radial-gradient(ellipse at 44% 50%, #000 22%, transparent 72%);
 }
@@ -600,8 +608,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   gap: clamp(4px, 1.2vw, 13px);
 
   --fan: 0;
-  --fan-close: 60px;  /* how far each outer slab tucks in when closed */
-  --fan-open: 55px;   /* how far it travels past its resting place when open */
+  --fan-close: 3.75rem;  /* how far each outer slab tucks in when closed */
+  --fan-open: 3.4375rem;   /* how far it travels past its resting place when open */
   --fan-step: calc(var(--fan) * (var(--fan-close) + var(--fan-open)) - var(--fan-close));
 }
 
@@ -614,8 +622,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   /* Pointer parallax (scaled by the slab's own --d) and the fan offset share
      one transform, so the two never fight over the property. */
   transform: translate3d(
-    calc(var(--mx, 0) * var(--d, 1) * 20px),
-    calc(var(--my, 0) * var(--d, 1) * 16px + (var(--i, 1) - 1) * var(--fan-step)),
+    calc(var(--mx, 0) * var(--d, 1) * 1.25rem),
+    calc(var(--my, 0) * var(--d, 1) * 1rem + (var(--i, 1) - 1) * var(--fan-step)),
     0);
 }
 .stack__float {
@@ -626,7 +634,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 @keyframes drift {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-8px); }
+  50%      { transform: translateY(-0.5rem); }
 }
 
 /* Label rail beside each slab. The tags sit inside .stack__layer, so they ride
@@ -639,7 +647,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   padding-left: clamp(0.45rem, 1.6vw, 1.1rem);
   min-width: 0;
   opacity: calc(0.34 + 0.66 * var(--fan, 0));
-  transform: translateX(calc((1 - var(--fan, 0)) * -12px));
+  transform: translateX(calc((1 - var(--fan, 0)) * -0.75rem));
 }
 .stack__tag::before {
   content: ""; height: 1px; flex: none;
@@ -720,7 +728,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .card:hover::before { width: 100%; }
 .card:hover .index { -webkit-text-stroke-color: var(--gold); }
 
-.card__ico { width: 42px; height: 42px; margin-bottom: 0.6rem; }
+.card__ico { width: 2.625rem; height: 2.625rem; margin-bottom: 0.6rem; }
 .card h3 { font-size: 1.16rem; letter-spacing: -0.025em; }
 .card p { color: var(--paper-2); font-size: 0.955rem; line-height: 1.66; }
 
@@ -747,7 +755,7 @@ p.card__say {
 .rows { display: grid; gap: 0; border-top: 1px solid var(--line); }
 .row {
   display: grid;
-  grid-template-columns: minmax(0, 88px) minmax(0, 1fr) minmax(0, 1.25fr);
+  grid-template-columns: minmax(0, 5.5rem) minmax(0, 1fr) minmax(0, 1.25fr);
   gap: clamp(1rem, 3vw, 2.5rem);
   align-items: start;
   padding-block: clamp(1.8rem, 3.4vw, 2.7rem);
@@ -757,7 +765,7 @@ p.card__say {
 .row:hover { background: rgba(36,51,79,0.32); }
 .row:hover .index { -webkit-text-stroke-color: var(--gold); }
 .row h3 { font-size: clamp(1.18rem, 2vw, 1.5rem); }
-.row p { color: var(--paper-2); font-size: 0.97rem; }
+.row p { color: var(--paper-2); font-size: 0.97rem; max-width: 64ch; }
 
 /* A row with no number — for a single call-out that shouldn't read as an
    entry in a list. Same heading/paragraph treatment, just without the index
@@ -772,27 +780,27 @@ p.card__say {
 .flow { position: relative; display: grid; gap: 0; }
 .flow::before {
   content: ""; position: absolute;
-  left: 23px; top: 12px; bottom: 12px; width: 2px;
+  left: 1.4375rem; top: 0.75rem; bottom: 0.75rem; width: 2px;
   background: linear-gradient(180deg, var(--sky), rgba(91,155,213,0.15) 55%, var(--gold));
   opacity: 0.5;
 }
 .step {
   position: relative;
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
+  grid-template-columns: 3rem minmax(0, 1fr);
   gap: clamp(1.2rem, 3vw, 2.4rem);
   padding-block: clamp(1.5rem, 3vw, 2.3rem);
 }
 .step + .step { border-top: 1px solid var(--line); }
 .step__mark {
   position: relative; z-index: 1;
-  width: 48px; height: 48px;
+  width: 3rem; height: 3rem;
   display: grid; place-items: center;
   background: var(--ink-raise);
   border: 1px solid var(--line-2);
   font-family: var(--display); font-weight: 700; font-size: 0.9rem;
   color: var(--gold);
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 0.5625rem), calc(100% - 0.5625rem) 100%, 0 100%);
   transition: border-color 0.35s var(--ease), color 0.35s var(--ease), background 0.35s var(--ease);
 }
 .step:hover .step__mark { border-color: var(--gold); background: var(--navy-lift); }
@@ -811,7 +819,7 @@ p.card__say {
    -------------------------------------------------------------------------- */
 .tiers {
   display: grid; gap: 1.2rem;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(17.5rem, 1fr));
   align-items: stretch;
 }
 .tier {
@@ -839,7 +847,7 @@ p.card__say {
   color: #171104;
   background: linear-gradient(135deg, var(--gold-hi), var(--gold));
   padding: 0.42rem 0.9rem;
-  clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%);
+  clip-path: polygon(0.875rem 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .tier__name {
@@ -1113,7 +1121,7 @@ p.card__say {
 
 .sign { display: flex; align-items: center; gap: 1.1rem; margin-top: 2.5rem;
   padding-top: 1.8rem; border-top: 1px solid var(--line); }
-.sign__mark { width: 46px; height: 46px; flex: none; }
+.sign__mark { width: 2.875rem; height: 2.875rem; flex: none; }
 .sign__mark img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .sign__txt { display: grid; gap: 0.1rem; }
 .sign__txt b { font-family: var(--display); font-size: 1.02rem; letter-spacing: -0.02em; }
@@ -1184,7 +1192,7 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
   padding-right: 2.6rem;
 }
 .field select option { background: var(--ink-raise); color: var(--paper); }
-.field textarea { resize: vertical; min-height: 132px; line-height: 1.65; }
+.field textarea { resize: vertical; min-height: 8.25rem; line-height: 1.65; }
 .field input::placeholder, .field textarea::placeholder { color: var(--paper-4); }
 .field input:focus, .field textarea:focus, .field select:focus {
   border-color: var(--sky); background: rgba(11,15,24,0.95); outline: none;
@@ -1209,13 +1217,13 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
 .check { display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; }
 .check input { position: absolute; opacity: 0; width: 0; height: 0; }
 .check__box {
-  width: 19px; height: 19px; flex: none; margin-top: 0.15rem;
+  width: 1.1875rem; height: 1.1875rem; flex: none; margin-top: 0.15rem;
   border: 1px solid var(--line-3);
   display: grid; place-items: center;
   transition: background 0.25s var(--ease), border-color 0.25s var(--ease);
 }
 .check__box::after {
-  content: ""; width: 9px; height: 5px;
+  content: ""; width: 0.5625rem; height: 0.3125rem;
   border-left: 2px solid var(--ink); border-bottom: 2px solid var(--ink);
   transform: rotate(-45deg) scale(0); transform-origin: center;
   transition: transform 0.25s var(--ease-out);
@@ -1265,16 +1273,16 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
   gap: clamp(1.5rem, 4vw, 3rem);
   align-items: center;
   overflow: hidden;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 34px), calc(100% - 34px) 100%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2.125rem), calc(100% - 2.125rem) 100%, 0 100%);
 }
 .cta h2 { font-size: clamp(1.7rem, 3.6vw, 2.7rem); margin-bottom: 0.8rem; }
 .cta p { color: var(--paper-2); max-width: 52ch; }
 .cta__plates {
-  position: absolute; right: -40px; top: 50%; transform: translateY(-50%);
-  display: grid; gap: 10px; opacity: 0.16; pointer-events: none;
+  position: absolute; right: -2.5rem; top: 50%; transform: translateY(-50%);
+  display: grid; gap: 0.625rem; opacity: 0.16; pointer-events: none;
 }
 .cta__plates i {
-  display: block; width: 200px; height: 44px;
+  display: block; width: 12.5rem; height: 2.75rem;
   clip-path: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
 }
 .cta__plates i:nth-child(1) { background: var(--sky); }
@@ -1384,7 +1392,7 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
 .legal ul { display: grid; gap: 0.5rem; margin: 1rem 0; }
 .legal ul li { display: flex; gap: 0.7rem; }
 .legal ul li::before {
-  content: ""; width: 14px; height: 7px; flex: none; margin-top: 0.6rem;
+  content: ""; width: 0.875rem; height: 0.4375rem; flex: none; margin-top: 0.6rem;
   background: var(--line-3);
   clip-path: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
 }
@@ -1413,7 +1421,7 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
    -------------------------------------------------------------------------- */
 @media (max-width: 1080px) {
   .hero__grid { grid-template-columns: 1fr; gap: clamp(2.5rem, 7vw, 4rem); }
-  .stage { max-width: 540px; margin-inline: auto; width: 100%; }
+  .stage { max-width: 33.75rem; margin-inline: auto; width: 100%; }
   /* Single column: the stage is its own row, so there is no spare height to
      pin against. The graphic scrolls with the page and main.js drives --fan
      from how far it has climbed the viewport instead (mode 'view'), so the
@@ -1431,7 +1439,7 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
   .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .footer__top { grid-template-columns: 1fr 1fr; }
   .footer__brand { grid-column: 1 / -1; }
-  .row { grid-template-columns: 64px minmax(0, 1fr); }
+  .row { grid-template-columns: 4rem minmax(0, 1fr); }
   .row > *:nth-child(3) { grid-column: 2; }
   .row.row--single { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); }
 }
@@ -1445,7 +1453,7 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
   .burger { position: relative; z-index: 60; }
   .mainnav {
     position: fixed; inset: 0 0 0 auto;
-    width: min(360px, 86vw);
+    width: min(22.5rem, 86vw);
     flex-direction: column; align-items: stretch; justify-content: flex-start;
     gap: 0;
     padding: 6.5rem 1.75rem 2.5rem;
@@ -1508,9 +1516,9 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
 
 @media (max-width: 620px) {
   :root { --band: clamp(3.5rem, 12vw, 5rem); }
-  .brand__mark { width: 42px; height: 42px; }
+  .brand__mark { width: 2.625rem; height: 2.625rem; }
   .brand__name { font-size: 1.5rem; }
-  .brand__tag { font-size: 0.47rem; letter-spacing: 0.2em; }
+  .brand__tag { font-size: 0.56rem; letter-spacing: 0.2em; }
   .hero__proof { gap: 0 1.4rem; }
   .hero__proof div { min-width: 46%; }
   .btn { width: 100%; }
@@ -1520,9 +1528,9 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
   .row > *:nth-child(3) { grid-column: 1; }
   .row.row--single { grid-template-columns: 1fr; gap: 0.6rem; }
   .index { font-size: 2.2rem; }
-  .step { grid-template-columns: 40px minmax(0, 1fr); gap: 1rem; }
-  .step__mark { width: 40px; height: 40px; font-size: 0.82rem; }
-  .flow::before { left: 19px; }
+  .step { grid-template-columns: 2.5rem minmax(0, 1fr); gap: 1rem; }
+  .step__mark { width: 2.5rem; height: 2.5rem; font-size: 0.82rem; }
+  .flow::before { left: 1.1875rem; }
   .cmp-only { display: none; }
   .compare { display: none; }
   .compare-cards { display: grid; gap: 1rem; }

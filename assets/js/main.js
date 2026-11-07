@@ -104,7 +104,8 @@
       var wide   = window.innerWidth > 1080;
 
       // Park the graphic below mid-screen, but never under the masthead.
-      var pinTop = Math.max(96, Math.round((vh - pinH) * PIN_BIAS));
+      var rs = (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16) / 16; /* root-size scale */
+      var pinTop = Math.max(Math.round(96 * rs), Math.round((vh - pinH) * PIN_BIAS));
       stage.style.setProperty('--pin-top', pinTop + 'px');
 
       if (wide && travel >= MIN_TRAVEL) {
