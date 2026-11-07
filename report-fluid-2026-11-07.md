@@ -40,3 +40,8 @@ See the end of this file (filled in after deploy).
 - Hero: the pinned graphic track still leaves a tall empty-looking stretch below the copy on very tall screens. That is the scroll-scrub design (graphic stays parked while the copy scrolls) and was already like that; I did not redesign it.
 - "How I work" steps and the "Why" rows leave the right part of the container quiet at 2560+. Text is capped for readability; filling it would need a layout redesign.
 - Screenshots of the contact sheet are scaled down; judge detail on the live preview.
+
+## Preview (deployed 2026-11-07, branch preview only)
+https://fluid-layout-2026-11-07.nuvejo-aus.pages.dev (Cloudflare Pages branch build from the pushed branch; production `nuvejo.com.au` untouched).
+Verified on the preview at 390, 1440 and 2560 wide (index, pricing-services, work): no horizontal scroll, no console errors, root size 16 / 16 / 22 px, shell 390 / 1296 / 2200 px.
+Contact sheet: https://fluid-layout-2026-11-07.nuvejo-aus.pages.dev/fluid-contact-sheet.png
